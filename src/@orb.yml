@@ -35,3 +35,5 @@ commands:
             aws configure set aws_access_key_id $(echo $assume_role_creds | jq .Credentials.AccessKeyId | xargs) --profile << parameters.profile_name >> && \
             aws configure set aws_secret_access_key $(echo $assume_role_creds | jq .Credentials.SecretAccessKey | xargs) --profile << parameters.profile_name >> && \
             aws configure set aws_session_token $(echo $assume_role_creds | jq .Credentials.SessionToken | xargs) --profile << parameters.profile_name >>
+            unset AWS_ACCESS_KEY_ID
+            unset AWS_SECRET_ACCESS_KEY
