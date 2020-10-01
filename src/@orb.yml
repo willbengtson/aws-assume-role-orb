@@ -1,15 +1,34 @@
 version: 2.1
 
-description: >
-  Sample orb description
-# What will your orb allow users to accomplish?
-# Descriptions should be short, simple, and informative.
+description: |
+  AWS Assume Role with Job context
 
-# This information will be displayed in the orb registry and is not mandatory.
+orbs:
+  aws-cli: circleci/aws-cli@0.1.6
+
 display:
-  home_url: "https://www.website.com/docs"
-  source_url: "https://www.github.com/EXAMPLE_ORG/EXAMPLE_PROJECT"
+  source_url: "https://www.github.com/willbengtson/aws-assume-role-orb"
 
-# If your orb requires other orbs, you can import them like this. Otherwise remove the "orbs" stanza.
-# orbs:
-#  hello: circleci/hello-build@0.0.5
+commands:
+  assume_role:
+    description: Installs AWS CLI and performs a sts assume-role to the target role with some job context
+    parameters:
+      account_id:
+        description: AWS account ID where the target role lives
+        type: string
+      role_name:
+        description: Role name
+        type: string
+    steps:
+      - aws-cli/install
+      - run:
+          name: "Assume IAM Role"
+          command: |
+            set -e
+
+            assume_role_creds=$(aws sts assume-role --role-arn "arn:aws:iam::<< parameters.account_id >>:role/<< parameters.role_name >>" \
+            --role-session-name "${CIRCLE_PR_REPONAME}-${CIRCLE_BUILD_NUM}")
+            echo 'export AWS_ACCESS_KEY_ID=$(echo ${assume_role_creds} | jq -r ".Credentials.AccessKeyId")' >> $BASH_ENV
+            echo 'export AWS_SECRET_ACCESS_KEY=$(echo ${assume_role_creds} | jq -r ".Credentials.SecretAccessKey")' >> $BASH_ENV
+            echo 'export AWS_SESSION_TOKEN=$(echo ${assume_role_creds} | jq -r ".Credentials.SessionToken")' >> $BASH_ENV
+            echo 'export AWS_SESSION_EXPIRATION=$(echo ${assume_role_creds} | jq -r ".Credentials.Expiration")' >> $BASH_ENV
