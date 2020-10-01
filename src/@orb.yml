@@ -21,7 +21,7 @@ commands:
         type: string
     steps:
       - aws-cli/install
-      - run: 
+      - run:
           name: "Assume IAM Role"
           command: |
             set -e
