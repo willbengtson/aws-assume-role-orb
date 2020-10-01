@@ -28,7 +28,8 @@ commands:
 
             assume_role_creds=$(aws sts assume-role --role-arn "arn:aws:iam::<< parameters.account_id >>:role/<< parameters.role_name >>" \
             --role-session-name "${CIRCLE_PR_REPONAME}-${CIRCLE_BUILD_NUM}")
-            echo 'export AWS_ACCESS_KEY_ID=$(echo ${assume_role_creds} | jq -r ".Credentials.AccessKeyId")' >> $BASH_ENV
-            echo 'export AWS_SECRET_ACCESS_KEY=$(echo ${assume_role_creds} | jq -r ".Credentials.SecretAccessKey")' >> $BASH_ENV
-            echo 'export AWS_SESSION_TOKEN=$(echo ${assume_role_creds} | jq -r ".Credentials.SessionToken")' >> $BASH_ENV
-            echo 'export AWS_SESSION_EXPIRATION=$(echo ${assume_role_creds} | jq -r ".Credentials.Expiration")' >> $BASH_ENV
+            echo 'export AWS_ACCESS_KEY_ID=$(echo ${assume_role_creds} | jq -r ".Credentials.AccessKeyId")' >> ${BASH_ENV}
+            echo 'export AWS_SECRET_ACCESS_KEY=$(echo ${assume_role_creds} | jq -r ".Credentials.SecretAccessKey")' >> ${BASH_ENV}
+            echo 'export AWS_SESSION_TOKEN=$(echo ${assume_role_creds} | jq -r ".Credentials.SessionToken")' >> ${BASH_ENV}
+            echo 'export AWS_SESSION_EXPIRATION=$(echo ${assume_role_creds} | jq -r ".Credentials.Expiration")' >> ${BASH_ENV}
+            source $BASH_ENV
