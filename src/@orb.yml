@@ -31,7 +31,7 @@ commands:
             set -e
 
             assume_role_creds=$(aws sts assume-role --role-arn "arn:aws:iam::<< parameters.account_id >>:role/<< parameters.role_name >>" \
-            --role-session-name "${CIRCLE_PR_REPONAME}-${CIRCLE_BUILD_NUM}")
+            --role-session-name "${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BUILD_NUM}")
             aws configure set aws_access_key_id $(echo $assume_role_creds | jq .Credentials.AccessKeyId | xargs) --profile << parameters.profile_name >> && \
             aws configure set aws_secret_access_key $(echo $assume_role_creds | jq .Credentials.SecretAccessKey | xargs) --profile << parameters.profile_name >> && \
             aws configure set aws_session_token $(echo $assume_role_creds | jq .Credentials.SessionToken | xargs) --profile << parameters.profile_name >>
